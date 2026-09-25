@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Query
 from fastapi.responses import PlainTextResponse
 import httpx
 
@@ -16,9 +16,9 @@ async def health():
 
 @app.get("/webhook")
 async def verify_webhook(
-    hub_mode: str | None = None,
-    hub_verify_token: str | None = None,
-    hub_challenge: str | None = None,
+   hub_mode: str | None = Query(default=None, alias="hub.mode"),
+hub_verify_token: str | None = Query(default=None, alias="hub.verify_token"),
+hub_challenge: str | None = Query(default=None, alias="hub.challenge"),
 ):
     if hub_mode == "subscribe" and hub_verify_token == VERIFY_TOKEN:
         return PlainTextResponse(hub_challenge or "")
