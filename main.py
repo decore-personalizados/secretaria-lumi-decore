@@ -64,6 +64,29 @@ hub_challenge: str | None = Query(default=None, alias="hub.challenge"),
 async def receive_webhook(request: Request):
     payload = await request.json()
     print("Webhook recebido:", payload)
+
+    try:
+        for entry in payload.get("entry", []):
+            for change in entry.get("changes", []):
+                value = change.get("value", {})
+
+                for message in value.get("messages", []):
+                    if message.get("type") != "text":
+                        continue
+
+                    from_number = message.get("from")
+                    text = message.get("text", {}).get("body", "").strip()
+
+                    if from_number and text:
+                        resposta = (
+                            "Olá! 💜 Sou a Secretária Lumi da Decorê. "
+                            "Recebi sua mensagem e já estou aqui para atender você! ✨"
+                        )
+                        await send_whatsapp_text(from_number, resposta)
+
+    except Exception as e:
+        print("Erro ao processar mensagem:", repr(e))
+
     return {"status": "received"}
 
 async def send_whatsapp_text(to: str, message: str):
