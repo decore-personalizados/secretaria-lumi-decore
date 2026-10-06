@@ -104,10 +104,9 @@ async def send_whatsapp_text(to: str, message: str):
         "type": "text",
         "text": {"body": message},
     }
-
-    async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.post(url, headers=headers, json=body)
-        if response.status_code >= 400:
-               print("ERRO META:", response.status_code, response.text)
-               raise RuntimeError(f"WhatsApp API error {response.status_code}: {response.text}")
-           return response.json()
+async with httpx.AsyncClient(timeout=30) as client:
+    response = await client.post(url, headers=headers, json=body)
+    if response.status_code >= 400:
+        print("ERRO META:", response.status_code, response.text)
+        raise RuntimeError(f"WhatsApp API error {response.status_code}: {response.text}")
+    return response.json()
