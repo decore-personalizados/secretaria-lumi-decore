@@ -1,6 +1,6 @@
 import os
 from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, HTMLResponse
 import httpx
 
 app = FastAPI(title="Secretária Lumi — Decorê")
@@ -12,7 +12,43 @@ API_VERSION = os.getenv("WHATSAPP_API_VERSION", "v23.0")
 
 @app.get("/")
 async def health():
-    return {"status": "online", "service": "Secretária Lumi", "brand": "Decorê"}
+   return {"status": "online", "service": "Secretária Lumi", "brand": "Decorê"}
+
+@app.get("/privacy")
+async def privacy():
+    return HTMLResponse("""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade — Secretária Lumi</title>
+</head>
+<body>
+    <h1>Política de Privacidade — Secretária Lumi</h1>
+
+    <p>A Secretária Lumi é um serviço da Decorê Personalizados de Luxo destinado ao atendimento e à automação de comunicações.</p>
+
+    <h2>Informações tratadas</h2>
+    <p>Podem ser tratados dados fornecidos durante o atendimento, como nome, número de telefone e conteúdo das mensagens.</p>
+
+    <h2>Uso das informações</h2>
+    <p>As informações são utilizadas para atendimento ao cliente, organização das conversas e funcionamento da integração com o WhatsApp Business.</p>
+
+    <h2>Compartilhamento</h2>
+    <p>As informações podem ser processadas por serviços tecnológicos necessários ao funcionamento da integração e do atendimento.</p>
+
+    <h2>Segurança</h2>
+    <p>São adotadas medidas técnicas e administrativas para proteger as informações contra acesso não autorizado.</p>
+
+    <h2>Exclusão de dados</h2>
+    <p>Solicitações de acesso, correção ou exclusão de dados podem ser feitas pelos canais de atendimento da Decorê.</p>
+
+    <h2>Contato</h2>
+    <p>Decorê Personalizados de Luxo</p>
+</body>
+</html>
+""")
 
 @app.get("/webhook")
 async def verify_webhook(
