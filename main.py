@@ -94,19 +94,26 @@ async def send_whatsapp_text(to: str, message: str):
         raise RuntimeError("Credenciais do WhatsApp ainda não configuradas.")
 
     url = f"https://graph.facebook.com/{API_VERSION}/{PHONE_NUMBER_ID}/messages"
+
     headers = {
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json",
     }
+
     body = {
         "messaging_product": "whatsapp",
         "to": to,
         "type": "text",
         "text": {"body": message},
     }
-async with httpx.AsyncClient(timeout=30) as client:
-    response = await client.post(url, headers=headers, json=body)
-    if response.status_code >= 400:
-        print("ERRO META:", response.status_code, response.text)
-        raise RuntimeError(f"WhatsApp API error {response.status_code}: {response.text}")
-    return response.json()
+
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(url, headers=headers, json=body)
+
+        if response.status_code >= 400:
+            print("ERRO META:", response.status_code, response.text)
+            raise RuntimeError(
+                f"WhatsApp API error {response.status_code}: {response.text}"
+            )
+
+        return response.json()
